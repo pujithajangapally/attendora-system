@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="assets/icon-64.png">
+  <link rel="shortcut icon" type="image/png" href="assets/icon-64.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Select Period — Attendora</title>
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+    <img src="assets/icon-64.png" class="logo-icon">
+    </div>
+    <nav><a href="index.html">Home</a></nav>
+  </header>
+
+  <main class="container">
+    <h2>Select Period</h2>
+    <div class="period-grid" id="periodGrid"></div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    const grid = document.getElementById('periodGrid');
+    for (let i = 1; i <= 8; i++){
+      const b = document.createElement('button');
+      b.className = 'period-btn';
+      b.innerText = 'Period ' + i;
+      b.onclick = async () => {
+        localStorage.setItem('attendora_period', 'period' + i);
+        // inform backend (optional). We'll try and ignore errors.
+        await apiPost('/select_period', { period: 'period' + i });
+        window.location.href = 'attendance.html';
+      };
+      grid.appendChild(b);
+    }
+  </script>
+</body>
+</html>

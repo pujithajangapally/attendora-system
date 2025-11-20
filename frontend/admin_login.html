@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="assets/icon-64.png">
+  <link rel="shortcut icon" type="image/png" href="assets/icon-64.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Teacher login for Attendora Smart Attendance System ">
+  <title>Teacher Login — Attendora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page--centered">
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/icon-64.png" class="logo-icon">
+    </div>
+    <nav><a href="index.html">Home</a></nav>
+  </header>
+
+  <main class="card card--narrow">
+    <h2>Teacher Login</h2>
+
+    <label>Email (use a Gmail)</label>
+    <input id="username" placeholder="you@gmail.com" autocomplete="username">
+
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+
+    <button class="btn btn--primary" id="loginBtn">Login</button>
+
+    <p id="loginError" class="text--error"></p>
+  </main>
+
+  <script src="script.js"></script>
+
+  <!-- FIXED / CLEAN SECRET LOGIN LOGIC -->
+  <script>
+    document.getElementById("loginBtn").addEventListener("click", async function () {
+
+        const email = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const passkey = password; // secret key = password
+        const err = document.getElementById("loginError");
+
+        err.innerText = "";
+
+        // 🔐 SECRET PASSWORD CHECK
+        if (passkey !== "attendora") {
+            err.innerText = "Incorrect password!";
+            return;
+        }
+
+        // SUCCESS → Redirect to next page
+        window.location.href = "periods.html";
+    });
+  </script>
+
+</body>
+</html>

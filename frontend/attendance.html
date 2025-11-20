@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="icon" type="image/png" href="assets/icon-64.png">
+  <link rel="shortcut icon" type="image/png" href="assets/icon-64.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Attendance — Attendora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="assets/icon-64.png" class="logo-icon"><span class="brand-text">ATTENDORA</span></div>
+    <nav><a href="periods.html">Back</a></nav>
+  </header>
+
+  <main class="container card">
+    <h2 id="periodTitle">Attendance Control</h2>
+    <p class="muted">Teacher-controlled session. Camera runs only while attendance is running.</p>
+
+    <div class="controls">
+      <button id="startBtn" class="btn btn--primary">Start Attendance</button>
+      <button id="stopBtn" class="btn btn--danger">Stop Attendance</button>
+    </div>
+
+    <div class="status" id="statusBox">
+      <p>Status: <span id="statusText">Idle</span></p>
+      <p>Running: <span id="runningText">No</span></p>
+      <p>Present count: <span id="presentCount">0</span></p>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    const period = localStorage.getItem('attendora_period') || 'period1';
+    document.getElementById('periodTitle').innerText = 'Attendance — ' + period;
+
+    document.getElementById('startBtn').addEventListener('click', async () => {
+      setStatus('Starting...');
+      const res = await apiPost('/start_attendance', { period });
+      if (res && (res.status === 'started' || res.status === 'running')) {
+        setStatus('Running');
+        document.getElementById('runningText').innerText = 'Yes';
+      } else {
+        setStatus('Error starting');
+        alert('Start failed: ' + JSON.stringify(res));
+      }
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', async () => {
+      setStatus('Stopping...');
+      const res = await apiPost('/stop_attendance', { period });
+      if (res && (res.status === 'stopping' || res.status === 'stopped')) {
+        setStatus('Stopped');
+        document.getElementById('runningText').innerText = 'No';
+        // load summary after a short delay
+        setTimeout(()=> window.location.href = 'summary.html', 700);
+      } else {
+        setStatus('Error stopping');
+        alert('Stop failed: ' + JSON.stringify(res));
+      }
+    });
+
+    function setStatus(t){ document.getElementById('statusText').innerText = t; }
+
+    // poll status for live present count
+    setInterval(async ()=>{
+      const s = await apiGet('/api/status');
+      if (s) {
+        document.getElementById('presentCount').innerText = (s.stats && (s.stats.present || s.stats.present_list && s.stats.present_list.length)) || 0;
+        document.getElementById('runningText').innerText = s.running ? 'Yes' : 'No';
+        document.getElementById('statusText').innerText = s.running ? 'Running' : 'Idle';
+      }
+    }, 3000);
+  </script>
+</body>
+</html>

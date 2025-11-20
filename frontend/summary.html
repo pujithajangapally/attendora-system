@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="icon" type="image/png" href="assets/icon-64.png">
+  <link rel="shortcut icon" type="image/png" href="assets/icon-64.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Summary — Attendora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+    <img src="assets/icon-64.png" class="logo-icon"></div>
+    <nav><a href="periods.html">Back</a></nav>
+  </header>
+
+  <main class="container card">
+    <h2>Attendance Summary</h2>
+    <div id="summaryBox"><p>Loading summary…</p></div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+async function loadSummary(){
+    const res = await apiGet('/summary');
+    const box = document.getElementById('summaryBox');
+
+    if (!res) { 
+        box.innerHTML = '<p>Error loading summary</p>'; 
+        return; 
+    }
+
+    box.innerHTML = `
+        <p><strong>Present:</strong> ${res.present || 0}</p>
+        <p><strong>Absent:</strong> ${res.absent || 0}</p>
+        <h4>Present Students:</h4>
+        <ul>
+            ${(res.present_list || []).map(s => `<li>${s}</li>`).join('')}
+        </ul>
+        <h4>Absent Students:</h4>
+        <ul>
+            ${(res.absent_list || []).map(s => `<li>${s}</li>`).join('')}
+        </ul>
+    `;
+}
+loadSummary();
+</script>
+</body>
+</html>
