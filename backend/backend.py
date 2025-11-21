@@ -40,7 +40,7 @@ valid_periods = ["period1", "period2", "period3","period4","period5","period6","
 
 # ---------- TWILIO CONFIG ----------
 account_sid = "AC115fd4c34e0d3366cba43a3ae9240756"
-auth_token = "cf4b27d191274419481dee121b8f9dd2"
+auth_token = "a449d25de986caa70ccf582fbd92d423"
 from_whatsapp = "whatsapp:+14155238886"
 client = Client(account_sid, auth_token)
 
